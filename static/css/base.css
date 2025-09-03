@@ -1,11 +1,5 @@
-/* ========================================
-   ESTILOS BASE - CAFÉ CONTROL
-   ======================================== */
-
-/* Importação de Fontes */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Reset e Estilos Globais */
 * {
     margin: 0;
     padding: 0;
@@ -18,15 +12,11 @@ body {
     line-height: 1.6;
 }
 
-/* Layout Principal */
 .dashboard-wrapper {
     display: flex;
     min-height: 100vh;
 }
 
-/* ========================================
-   BARRA LATERAL (SIDEBAR)
-   ======================================== */
 .sidebar {
     width: 260px;
     background-color: #ffffff;
@@ -73,9 +63,6 @@ body {
     font-weight: 600;
 }
 
-/* ========================================
-   CONTEÚDO PRINCIPAL
-   ======================================== */
 .main-content {
     flex-grow: 1;
     padding: 2rem;
@@ -84,7 +71,6 @@ body {
     flex-direction: column;
 }
 
-/* Cabeçalho do Conteúdo */
 .content-header {
     display: flex;
     justify-content: space-between;

@@ -22,8 +22,6 @@ class DashboardView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['categorias'] = Categoria.objects.all()
         
-        # Calcular total faturado (comandas pagas)
-        # Como total_geral é uma property, vamos calcular manualmente
         comandas_pagas = Comanda.objects.filter(status='PAGA')
         total_faturado = 0
         
@@ -155,25 +153,21 @@ class ComandaCreateView(LoginRequiredMixin, CreateView):
         form.instance.codigo = Comanda.objects.count() + 1
         response = super().form_valid(form)
         
-        # Atualiza status da mesa se foi selecionada
         if form.instance.mesa:
             form.instance.mesa.status = 'OCUPADA'
             form.instance.mesa.save()
         
-        # Salva comanda na sessão para usar na página de pedidos
         self.request.session['comanda_atual'] = self.object.id
         messages.success(self.request, f'Comanda {self.object.codigo} criada!')
         return redirect('core:comanda_detail', pk=self.object.id)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Adiciona mesas disponíveis ao contexto
         context['mesas'] = Mesa.objects.filter(status='LIVRE')
         return context
     
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        # Filtra apenas mesas livres no campo mesa
         if 'mesa' in form.fields:
             form.fields['mesa'].queryset = Mesa.objects.filter(status='LIVRE')
         return form
@@ -192,7 +186,6 @@ class ComandaListView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.object:
-            # Adiciona produtos e categorias para fazer pedidos
             context['produtos'] = Produto.objects.filter(ativo=True)
             context['categorias'] = Categoria.objects.filter(ativo=True)
             context['itens_comanda'] = self.object.itemcomanda_set.all()
@@ -220,7 +213,6 @@ class PedidosDetailView(LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Adiciona produtos e categorias para sua página HTML
         context['produtos'] = Produto.objects.filter(ativo=True)
         context['categorias'] = Categoria.objects.filter(ativo=True)
         context['itens_comanda'] = self.object.itemcomanda_set.all() if self.object else []
@@ -239,23 +231,19 @@ class AdicionarItemView(LoginRequiredMixin, CreateView):
         comanda = get_object_or_404(Comanda, id=comanda_id)
         produto = get_object_or_404(Produto, id=produto_id)
         
-        # Associa comanda e produto ao item
         form.instance.comanda = comanda
         form.instance.produto = produto
         
-        # Verifica se item já existe
         item_existente = ItemComanda.objects.filter(
             comanda=comanda, 
             produto=produto
         ).first()
         
         if item_existente:
-            # Atualiza quantidade existente
             item_existente.quantidade += form.instance.quantidade
             item_existente.save()
             messages.success(self.request, f'{produto.nome} adicionado à comanda!')
         else:
-            # Cria novo item
             form.save()
             messages.success(self.request, f'{produto.nome} adicionado à comanda!')
         
@@ -273,7 +261,6 @@ class FinalizarComandaView(LoginRequiredMixin, View):
         comanda.status = 'FECHADA'
         comanda.save()
         
-        # Libera a mesa se existir
         if comanda.mesa:
             comanda.mesa.status = 'LIVRE'
             comanda.mesa.save()
@@ -292,12 +279,10 @@ class ProcessarPagamentoView(LoginRequiredMixin, View):
     def post(self, request, comanda_id):
         comanda = get_object_or_404(Comanda, id=comanda_id)
         
-        # Obter dados do formulário
         metodo = request.POST.get('metodo')
         valor_pago = request.POST.get('valor_pago')
         troco = request.POST.get('troco', 0)
         
-        # Validar dados
         if not metodo or not valor_pago:
             messages.error(request, 'Preencha todos os campos obrigatórios!')
             return redirect('core:processar_pagamento', comanda_id=comanda_id)
@@ -309,12 +294,10 @@ class ProcessarPagamentoView(LoginRequiredMixin, View):
             messages.error(request, 'Valores inválidos!')
             return redirect('core:processar_pagamento', comanda_id=comanda_id)
         
-        # Verificar se valor pago é suficiente
         if valor_pago < comanda.total_geral:
             messages.error(request, 'Valor pago é menor que o total da comanda!')
             return redirect('core:processar_pagamento', comanda_id=comanda_id)
         
-        # Criar pagamento
         pagamento = Pagamento.objects.create(
             valor=valor_pago,
             metodo=metodo,
@@ -323,17 +306,14 @@ class ProcessarPagamentoView(LoginRequiredMixin, View):
             usuario=request.user
         )
         
-        # Atualizar comanda
         comanda.pagamento = pagamento
         comanda.status = 'PAGA'
         comanda.save()
         
-        # Liberar mesa se existir
         if comanda.mesa:
             comanda.mesa.status = 'LIVRE'
             comanda.mesa.save()
         
-        # Limpar sessão
         request.session.pop('comanda_atual', None)
         
         messages.success(request, f'Pagamento processado com sucesso! Comanda {comanda.codigo} paga.')
@@ -343,22 +323,18 @@ class EnviarCozinhaView(LoginRequiredMixin, View):
     def post(self, request, comanda_id):
         comanda = get_object_or_404(Comanda, id=comanda_id)
         
-        # Verifica se há itens na comanda
         if not comanda.itemcomanda_set.exists():
             messages.error(request, 'Não é possível enviar uma comanda vazia para a cozinha!')
             return redirect('core:comanda_detail', pk=comanda_id)
         
-        # Mantém o status como ABERTA e redireciona para pedidos
         messages.success(request, f'Comanda {comanda.codigo} enviada para a cozinha!')
         return redirect('core:pedidos')
 
 class PedidosView(LoginRequiredMixin, View):
     def get(self, request):
-        # Sempre mostra lista de comandas
         comandas = Comanda.objects.filter(usuario=request.user).order_by('-created_at')
         return render(request, 'core/pedidos/pedidos.html', {'comandas': comandas})
 
-# Views para gerenciar mesas (apenas gerente)
 class MesaListView(GerenteRequiredMixin, ListView):
     model = Mesa
     template_name = 'core/mesas/mesas.html'

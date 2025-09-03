@@ -8,7 +8,6 @@ from .serializers import (
     ComandaSerializer, ItemComandaSerializer, PagamentoSerializer, ComandaComPagamentoSerializer
 )
 
-# ViewSets para CRUD completo
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
@@ -51,8 +50,6 @@ class PagamentoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Pagamento.objects.filter(usuario=self.request.user)
-
-# API Views para funcionalidades específicas
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def produto_detail(request, pk):
@@ -71,16 +68,13 @@ def processar_pagamento_api(request, comanda_id):
     try:
         comanda = Comanda.objects.get(id=comanda_id, usuario=request.user)
         
-        # Verificar se comanda já foi paga
         if comanda.status == 'PAGA':
             return Response({'error': 'Comanda já foi paga'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Obter dados do request
         metodo = request.data.get('metodo')
         valor_pago = request.data.get('valor_pago')
         troco = request.data.get('troco', 0)
         
-        # Validar dados
         if not metodo or not valor_pago:
             return Response({'error': 'Método e valor são obrigatórios'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -90,11 +84,9 @@ def processar_pagamento_api(request, comanda_id):
         except ValueError:
             return Response({'error': 'Valores inválidos'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Verificar se valor pago é suficiente
         if valor_pago < comanda.total_geral:
             return Response({'error': 'Valor pago é menor que o total da comanda'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Criar pagamento
         pagamento = Pagamento.objects.create(
             valor=valor_pago,
             metodo=metodo,
@@ -103,12 +95,10 @@ def processar_pagamento_api(request, comanda_id):
             usuario=request.user
         )
         
-        # Atualizar comanda
         comanda.pagamento = pagamento
         comanda.status = 'PAGA'
         comanda.save()
         
-        # Liberar mesa se existir
         if comanda.mesa:
             comanda.mesa.status = 'LIVRE'
             comanda.mesa.save()
@@ -129,11 +119,9 @@ def faturamento_empresa(request):
     if request.user.cargo != 'ADMIN':
         return Response({'error': 'Acesso negado'}, status=status.HTTP_403_FORBIDDEN)
     
-    # Cálculo do faturamento
     comandas_pagas = Comanda.objects.filter(status='PAGA')
     faturamento_total = comandas_pagas.aggregate(total=Sum('total_geral'))['total'] or 0
     
-    # Estatísticas por origem
     faturamento_por_origem = comandas_pagas.values('origem').annotate(
         total=Sum('total_geral'),
         quantidade=Sum('id')

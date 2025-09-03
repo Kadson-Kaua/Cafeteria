@@ -6,19 +6,15 @@ from django.contrib.auth import authenticate
 from .models import User
 from .serializers import UserSerializer, UserCreateSerializer
 
-# ViewSet para usuários (só para admins)
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        # Só admins podem ver todos os usuários
         if self.request.user.cargo == 'ADMIN':
             return User.objects.all()
         return User.objects.none()
-
-# API Views para autenticação
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def register_user(request):

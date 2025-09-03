@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from users.models import User
-# Create your models here.
+
 class Categoria(models.Model):
     nome = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)

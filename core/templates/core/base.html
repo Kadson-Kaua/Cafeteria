@@ -6,21 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Café Control{% endblock %}</title>
     
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS Base -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     
-    <!-- CSS ESPECÍFICO DA PÁGINA -->
     <link rel="stylesheet" href="{% static 'css/page-specific.css' %}" id="page-specific-css">
     {% block extra_css %}{% endblock %}
     {% block page_css %}{% endblock %}
@@ -28,7 +23,6 @@
 <body>
 
 <div class="dashboard-wrapper">
-    <!-- Barra Lateral -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <h3>Café Control</h3>
@@ -71,9 +65,7 @@
         </ul>
     </aside>
 
-    <!-- Conteúdo Principal -->
     <main class="main-content">
-        <!-- Cabeçalho -->
         <header class="content-header">
             <div class="header-content">
                 <div class="header-left">
@@ -108,15 +100,12 @@
             </div>
         </header>
 
-        <!-- Formulário de logout oculto -->
         <form id="logout-form" method="post" action="{% url 'users:logout' %}" style="display: none;">
             {% csrf_token %}
         </form>
 
-        <!-- CONTEÚDO DA PÁGINA -->
         <div id="page-content">
             {% block content %}
-            <!-- O conteúdo específico de cada página será inserido aqui -->
             {% endblock %}
         </div>
     </main>

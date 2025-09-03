@@ -32,7 +32,6 @@ class CaixaRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return redirect('core:dashboard')
 
 
-# Funções auxiliares para verificar permissões
 def is_gerente(user):
     return user.cargo in ['GERENTE', 'ADMIN']
 
