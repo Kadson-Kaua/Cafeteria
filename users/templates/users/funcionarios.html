@@ -1,0 +1,329 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Funcionários - Café Control{% endblock %}
+{% block page_title %}Funcionários{% endblock %}
+
+{% block content %}
+    <!-- Tabela de Funcionários -->
+    <div class="card table-card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="{% url 'users:register' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Adicionar Funcionário
+                </a>
+            </div>
+        
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Cargo</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for funcionario in funcionarios %}
+                            <tr>
+                                <td><strong>{{ funcionario.get_full_name|default:funcionario.username }}</strong></td>
+                                <td>{{ funcionario.email }}</td>
+                                <td>
+                                    <span class="badge {% if funcionario.cargo == 'ADMIN' %}bg-danger{% elif funcionario.cargo == 'GERENTE' %}bg-warning{% else %}bg-info{% endif %}">
+                                        {{ funcionario.get_cargo_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if funcionario.is_active %}
+                                        <span class="badge bg-success">Ativo</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Inativo</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center action-buttons">
+                                    <button class="btn btn-outline-primary btn-sm btn-editar-funcionario" 
+                                            data-id="{{ funcionario.id }}" 
+                                            data-nome="{{ funcionario.get_full_name|default:funcionario.username|escapejs }}" 
+                                            data-email="{{ funcionario.email|escapejs }}" 
+                                            data-cargo="{{ funcionario.cargo }}">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm btn-deletar-funcionario" 
+                                            data-id="{{ funcionario.id }}" 
+                                            data-nome="{{ funcionario.get_full_name|default:funcionario.username|escapejs }}">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-people" style="font-size: 2rem;"></i>
+                                    <p class="mt-2 mb-0">Nenhum funcionário encontrado</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Editar Funcionário -->
+    <div class="modal fade" id="modalEditarFuncionario" tabindex="-1" aria-labelledby="modalEditarFuncionarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarFuncionarioLabel">
+                        <i class="bi bi-person-gear"></i>
+                        Editar Cargo do Funcionário
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditarFuncionario" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <h6>Funcionário:</h6>
+                            <p class="mb-1"><strong id="funcionarioNome"></strong></p>
+                            <p class="text-muted mb-0" id="funcionarioEmail"></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cargo" class="form-label">
+                                <i class="bi bi-briefcase"></i>
+                                Cargo
+                            </label>
+                            <select name="cargo" id="cargo" class="form-select" required>
+                                <option value="CAIXA">Caixa</option>
+                                <option value="GERENTE">Gerente</option>
+                                <option value="ADMIN">Administrador</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i>
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="modalConfirmarExclusao" tabindex="-1" aria-labelledby="modalConfirmarExclusaoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmarExclusaoLabel">
+                        <i class="bi bi-exclamation-triangle text-warning"></i>
+                        Confirmar Exclusão
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja remover o funcionário <strong id="funcionarioExcluirNome"></strong>?</p>
+                    <p class="text-muted mb-0">Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i>
+                        Cancelar
+                    </button>
+                    <form id="formDeletarFuncionario" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash-fill"></i>
+                            Confirmar Exclusão
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+console.log('Script carregado!');
+
+// Quando o documento estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado!');
+    
+    // Verifica se o Bootstrap está disponível
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap não está carregado!');
+        return;
+    }
+    
+    console.log('Bootstrap disponível:', bootstrap);
+    
+    // Adiciona event listeners para os botões de editar
+    const botoesEditar = document.querySelectorAll('.btn-editar-funcionario');
+    console.log('Botões editar encontrados:', botoesEditar.length);
+    
+    botoesEditar.forEach(function(button, index) {
+        console.log('Adicionando listener para botão editar', index);
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Botão editar clicado!');
+            
+            const id = this.getAttribute('data-id');
+            const nome = this.getAttribute('data-nome');
+            const email = this.getAttribute('data-email');
+            const cargo = this.getAttribute('data-cargo');
+            
+            console.log('Dados do funcionário:', {id, nome, email, cargo});
+            
+            // Preenche os dados do funcionário no modal
+            document.getElementById('funcionarioNome').textContent = nome;
+            document.getElementById('funcionarioEmail').textContent = email;
+            document.getElementById('cargo').value = cargo;
+            
+            // Atualiza a action do formulário
+            document.getElementById('formEditarFuncionario').action = '/users/funcionarios/editar/' + id + '/';
+            
+            // Abre o modal
+            const modalElement = document.getElementById('modalEditarFuncionario');
+            console.log('Elemento do modal:', modalElement);
+            
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement);
+                console.log('Modal criado:', modal);
+                modal.show();
+                console.log('Modal.show() executado');
+            } else {
+                console.error('Elemento do modal não encontrado!');
+            }
+        });
+    });
+
+    // Adiciona event listeners para os botões de deletar
+    const botoesDeletar = document.querySelectorAll('.btn-deletar-funcionario');
+    console.log('Botões deletar encontrados:', botoesDeletar.length);
+    
+    botoesDeletar.forEach(function(button, index) {
+        console.log('Adicionando listener para botão deletar', index);
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Botão deletar clicado!');
+            
+            const id = this.getAttribute('data-id');
+            const nome = this.getAttribute('data-nome');
+            
+            console.log('Dados para exclusão:', {id, nome});
+            
+            // Preenche o nome do funcionário no modal de confirmação
+            document.getElementById('funcionarioExcluirNome').textContent = nome;
+            
+            // Atualiza a action do formulário de exclusão
+            document.getElementById('formDeletarFuncionario').action = '/users/funcionarios/deletar/' + id + '/';
+            
+            // Abre o modal de confirmação
+            const modalElement = document.getElementById('modalConfirmarExclusao');
+            console.log('Elemento do modal de exclusão:', modalElement);
+            
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement);
+                console.log('Modal de exclusão criado:', modal);
+                modal.show();
+                console.log('Modal de exclusão.show() executado');
+            } else {
+                console.error('Elemento do modal de exclusão não encontrado!');
+            }
+        });
+    });
+
+    // Intercepta o submit do formulário de editar para fazer AJAX
+    const formEditar = document.getElementById('formEditarFuncionario');
+    if (formEditar) {
+        formEditar.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Formulário editar submetido via AJAX');
+            
+            const formData = new FormData(this);
+            const url = this.action;
+            
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fecha o modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarFuncionario'));
+                    modal.hide();
+                    
+                    // Mostra mensagem de sucesso
+                    alert('Cargo atualizado com sucesso!');
+                    
+                    // Recarrega a página para mostrar as mudanças
+                    location.reload();
+                } else {
+                    alert('Erro ao atualizar cargo: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar cargo. Tente novamente.');
+            });
+        });
+    }
+
+    // Intercepta o submit do formulário de deletar
+    const formDeletar = document.getElementById('formDeletarFuncionario');
+    if (formDeletar) {
+        formDeletar.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Formulário deletar submetido');
+            
+            const formData = new FormData(this);
+            const url = this.action;
+            
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    // Se houve redirecionamento, recarrega a página
+                    window.location.href = response.url;
+                } else {
+                    return response.text();
+                }
+            })
+            .then(data => {
+                if (data) {
+                    // Fecha o modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalConfirmarExclusao'));
+                    modal.hide();
+                    
+                    // Recarrega a página para mostrar as mudanças
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao deletar funcionário. Tente novamente.');
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

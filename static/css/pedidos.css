@@ -1,0 +1,266 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS - PEDIDOS
+   ======================================== */
+
+/* Layout de Pedidos */
+.order-layout {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 2rem 2rem;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Coluna de Produtos */
+.products-column {
+    background-color: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    flex-basis: 65%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.products-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.products-header .nav-pills .nav-link {
+    color: #6c757d;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+.products-header .nav-pills .nav-link.active {
+    background-color: #d93749;
+    color: #fff;
+}
+
+.products-header .nav-pills .nav-link:hover:not(.active) {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.search-container {
+    margin-top: 1rem;
+}
+
+.search-container .input-group-text {
+    background-color: #fff;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.search-container .form-control {
+    border-color: #dee2e6;
+}
+
+.search-container .form-control:focus {
+    border-color: #d93749;
+    box-shadow: 0 0 0 0.2rem rgba(217, 55, 73, 0.25);
+}
+
+/* Lista de Produtos */
+.product-list {
+    overflow-y: auto;
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+.product-category {
+    margin-bottom: 2rem;
+}
+
+.product-category h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.product-item:hover {
+    background-color: #f8f9fa;
+}
+
+.product-info {
+    flex-grow: 1;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.product-price {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.add-product-btn {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.add-product-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Coluna da Comanda */
+.order-summary-column {
+    background-color: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    flex-basis: 35%;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-summary-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.order-summary-header h4 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Itens do Pedido */
+.order-items {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.order-item-details .name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.order-item-details .qty-price {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.order-item .price {
+    font-weight: 600;
+    color: #d93749;
+}
+
+/* Rodapé da Comanda */
+.order-summary-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    border-radius: 0 0 1rem 1rem;
+}
+
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.total-section .total-value {
+    color: #d93749;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.action-buttons .btn {
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+}
+
+/* Responsividade para Pedidos */
+@media (max-width: 992px) {
+    .order-layout {
+        flex-direction: column;
+        padding: 0 1rem 1rem;
+    }
+    
+    .products-column,
+    .order-summary-column {
+        flex-basis: 100%;
+    }
+    
+    .products-column {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-layout {
+        padding: 0 0.5rem 0.5rem;
+    }
+    
+    .products-header,
+    .order-summary-header,
+    .order-summary-footer {
+        padding: 1rem;
+    }
+    
+    .product-list,
+    .order-items {
+        padding: 0.75rem;
+    }
+    
+    .total-section {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .products-header .nav-pills {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .products-header .nav-pills .nav-link {
+        text-align: center;
+    }
+    
+    .action-buttons .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}

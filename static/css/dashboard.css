@@ -1,0 +1,292 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS - DASHBOARD
+   ======================================== */
+
+/* Cards de Resumo */
+.dashboard-stats {
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+}
+
+.stat-card .stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.stat-card .stat-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Cores dos Cards de Estatísticas */
+.stat-card .stat-icon.text-danger {
+    color: #d93749 !important;
+}
+
+.stat-card .stat-icon.text-primary {
+    color: #0d6efd !important;
+}
+
+.stat-card .stat-icon.text-success {
+    color: #198754 !important;
+}
+
+.stat-card .stat-icon.text-warning {
+    color: #ffc107 !important;
+}
+
+.stat-card .stat-value.text-danger {
+    color: #d93749 !important;
+}
+
+.stat-card .stat-value.text-primary {
+    color: #0d6efd !important;
+}
+
+.stat-card .stat-value.text-success {
+    color: #198754 !important;
+}
+
+.stat-card .stat-value.text-warning {
+    color: #ffc107 !important;
+}
+
+/* Gráfico de Vendas */
+.sales-chart {
+    margin-top: 2rem;
+}
+
+.sales-chart .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.chart-day {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.chart-day-item {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.chart-day-item:hover {
+    background-color: #e9ecef;
+}
+
+.chart-day-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.chart-day-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #d93749;
+    margin: 0;
+}
+
+/* CSS específico para o Dashboard */
+
+/* Cards de estatísticas */
+.card.text-center {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    height: 200px; /* Altura fixa para todos os cards */
+    display: flex;
+    flex-direction: column;
+}
+
+.card.text-center:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card.text-center .card-body {
+    padding: 2rem 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card.text-center i {
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.card.text-center .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.card.text-center .display-6 {
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Cores dos cards */
+.card.text-center .text-danger {
+    color: #d93749 !important;
+}
+
+.card.text-center .text-primary {
+    color: #5a6ac2 !important;
+}
+
+.card.text-center .text-success {
+    color: #28a745 !important;
+}
+
+.card.text-center .text-warning {
+    color: #ffc107 !important;
+}
+
+/* Lista de produtos */
+.card .card-body h5 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.card .card-body .card {
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.card .card-body .card:hover {
+    border-color: #5a6ac2;
+    box-shadow: 0 4px 15px rgba(90, 106, 194, 0.15);
+}
+
+.card .card-body .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.card .card-body .card-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.card .card-body .badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background-color: #5a6ac2 !important;
+}
+
+.card .card-body .text-success {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .stat-card .stat-icon {
+        font-size: 2rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 2rem;
+    }
+    
+    .chart-day {
+        padding: 0.25rem;
+    }
+    
+    .chart-day-item {
+        padding: 0.75rem;
+    }
+    
+    .chart-day-value {
+        font-size: 1rem;
+    }
+
+    .row.g-4 {
+        margin-bottom: 1rem !important;
+    }
+    
+    .col-md-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .card.text-center .card-body {
+        padding: 1.5rem 1rem;
+    }
+    
+    .card.text-center i {
+        font-size: 2rem !important;
+    }
+    
+    .card.text-center .display-6 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stat-card .card-body {
+        padding: 1rem;
+    }
+    
+    .stat-card .stat-icon {
+        font-size: 1.75rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .chart-day-item {
+        padding: 0.5rem;
+    }
+
+    .card.text-center .card-body {
+        padding: 1rem;
+    }
+    
+    .card.text-center i {
+        font-size: 1.8rem !important;
+    }
+    
+    .card.text-center .display-6 {
+        font-size: 1.5rem;
+    }
+    
+    .card.text-center .card-title {
+        font-size: 0.9rem;
+    }
+}

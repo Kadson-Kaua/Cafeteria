@@ -1,0 +1,165 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Categorias{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Categorias</h1>
+        <button class="btn btn-primary" onclick="openModal()">
+            <i class="bi bi-plus-circle-fill"></i> Nova Categoria
+        </button>
+    </div>
+
+    {% if categorias %}
+        <div class="row">
+            {% for categoria in categorias %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ categoria.nome }}</h5>
+                            <p class="card-text">{{ categoria.descricao|default:"Sem descrição" }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge {% if categoria.ativo %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if categoria.ativo %}Ativo{% else %}Inativo{% endif %}
+                                </span>
+                                <div class="btn-group">
+                                    <a href="{% url 'core:categoria_detail' categoria.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a href="{% url 'core:categoria_update' categoria.pk %}" class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger" data-categoria-id="{{ categoria.pk }}" data-categoria-nome="{{ categoria.nome }}" onclick="confirmarExclusao(this)">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <nav aria-label="Navegação de páginas">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; Primeira</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-folder-x fa-3x text-muted mb-3"></i>
+            <h3>Nenhuma categoria encontrada</h3>
+            <p class="text-muted">Crie sua primeira categoria para começar!</p>
+            <button class="btn btn-primary" onclick="openModal()">
+                <i class="bi bi-plus-circle-fill"></i> Criar Categoria
+            </button>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal Simples -->
+<div class="modal fade" id="categoriaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nova Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'core:categoria_create' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_nome" class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="id_nome" name="nome" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_descricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="id_descricao" name="descricao" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="id_ativo" name="ativo" checked>
+                            <label class="form-check-label" for="id_ativo">
+                                Ativo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="modalExclusao" tabindex="-1" aria-labelledby="modalExclusaoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalExclusaoLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir a categoria <strong id="nomeCategoria"></strong>?</p>
+                <p class="text-muted">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formExclusao" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openModal() {
+    new bootstrap.Modal(document.getElementById('categoriaModal')).show();
+}
+
+function confirmarExclusao(button) {
+    const categoriaId = button.getAttribute('data-categoria-id');
+    const categoriaNome = button.getAttribute('data-categoria-nome');
+    document.getElementById('nomeCategoria').textContent = categoriaNome;
+    document.getElementById('formExclusao').action = `{% url 'core:categoria_delete' 0 %}`.replace('0', categoriaId);
+    new bootstrap.Modal(document.getElementById('modalExclusao')).show();
+}
+</script>
+{% endblock %}

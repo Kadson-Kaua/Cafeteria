@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Café Control{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="simple-form">
+    <h3>{{ title }}</h3>
+    
+    <div class="alert alert-danger">
+        <h5>Tem certeza que deseja excluir a mesa "{{ object.numero }}"?</h5>
+        <p>Esta ação não pode ser desfeita.</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-actions">
+            <a href="{% url 'core:mesas' %}" class="btn-cancel">Cancelar</a>
+            <button type="submit" class="btn-delete">Excluir</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'css/produto_form.css' %}">
+{% endblock %}

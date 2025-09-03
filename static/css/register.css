@@ -1,0 +1,369 @@
+/* Estilos específicos para a página de Criação de Conta */
+
+.signup-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.signup-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.signup-header {
+    margin-bottom: 30px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: #6f42c1;
+    margin-right: 15px;
+}
+
+.logo h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.subtitle {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.signup-form {
+    text-align: left;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border-left: 4px solid #6f42c1;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.section-title i {
+    color: #6f42c1;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-label i {
+    margin-right: 8px;
+    color: #6f42c1;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #6f42c1;
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.password-input {
+    position: relative;
+}
+
+.btn-toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.btn-toggle-password:hover {
+    color: #6f42c1;
+}
+
+/* Indicador de força da senha */
+.password-strength {
+    margin-top: 10px;
+}
+
+.strength-bar {
+    width: 100%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+}
+
+.strength-fill.weak {
+    width: 33.33%;
+    background: #dc3545;
+}
+
+.strength-fill.medium {
+    width: 66.66%;
+    background: #ffc107;
+}
+
+.strength-fill.strong {
+    width: 100%;
+    background: #28a745;
+}
+
+.strength-text {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.strength-text.weak {
+    color: #dc3545;
+}
+
+.strength-text.medium {
+    color: #ffc107;
+}
+
+.strength-text.strong {
+    color: #28a745;
+}
+
+.form-check-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.form-check-label a {
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-check-label a:hover {
+    text-decoration: underline;
+}
+
+.btn-signup {
+    width: 100%;
+    background: linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.btn-signup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(111, 66, 193, 0.3);
+}
+
+.btn-signup i {
+    margin-right: 8px;
+}
+
+.signup-footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.signup-footer p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.signup-footer a {
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
+.signup-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.signup-bottom p {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Estados de erro */
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .signup-card {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+    
+    .form-section {
+        padding: 20px;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.8rem;
+    }
+    
+    .logo i {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-card {
+        padding: 25px 15px;
+    }
+    
+    .form-section {
+        padding: 15px;
+    }
+    
+    .form-control {
+        padding: 10px 14px;
+    }
+    
+    .btn-signup {
+        padding: 14px;
+        font-size: 1rem;
+    }
+    
+    .row {
+        margin: 0;
+    }
+    
+    .col-md-6 {
+        padding: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* Animações */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.signup-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Hover effects para seções */
+.form-section:hover {
+    background: #f1f3f4;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Estilos para campos obrigatórios */
+.form-label.required::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Estilos para campos de seleção */
+select.form-control {
+    cursor: pointer;
+}
+
+select.form-control option {
+    padding: 8px;
+}
+
+/* Estilos para campo de data */
+input[type="date"].form-control {
+    cursor: pointer;
+}
+
+/* Estilos para links de termos */
+.form-check-label a {
+    color: #6f42c1 !important;
+}
+
+.form-check-label a:hover {
+    color: #5a32a3 !important;
+}

@@ -1,0 +1,119 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Tela de Pedidos - Café Control{% endblock %}
+
+{% block extra_css %}
+<!-- CSS Específico dos Pedidos -->
+<link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="order-layout">
+    <!-- Coluna da Esquerda: Seleção de Produtos -->
+    <div class="products-column">
+        <div class="products-header">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <span class="nav-link {% if comanda.origem == 'MESA' %}active{% endif %}">
+                        Mesas
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link {% if comanda.origem == 'BALCAO' %}active{% endif %}">
+                        Balcão
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link {% if comanda.origem == 'VIAGEM' %}active{% endif %}">
+                        Delivery
+                    </span>
+                </li>
+            </ul>
+            <div class="input-group mt-3">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="busca-produto" placeholder="Buscar produto...">
+            </div>
+        </div>
+        <div class="product-list">
+            {% for categoria in categorias %}
+                <h5 class="mb-3">{{ categoria.nome }}</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    {% for produto in produtos %}
+                        {% if produto.categoria == categoria %}
+                            <li class="list-group-item product-item">
+                                <div>
+                                    <div class="product-info">{{ produto.nome }}</div>
+                                    <div class="product-price">R$ {{ produto.preco }}</div>
+                                </div>
+                                <form method="post" action="{% url 'core:adicionar_item' comanda.pk produto.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantidade" value="1">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Coluna da Direita: Comanda (Resumo do Pedido) -->
+    <div class="order-summary-column">
+        <div class="order-summary-header">
+            <h4>Comanda: {{ comanda.codigo }}</h4>
+        </div>
+        <div class="order-items">
+            {% for item in itens_comanda %}
+                <div class="order-item">
+                    <div class="order-item-details">
+                        <div class="name">{{ item.produto.nome }}</div>
+                        <div class="qty-price">{{ item.quantidade }} x R$ {{ item.produto.preco }}</div>
+                    </div>
+                    <div class="price">R$ {{ item.total }}</div>
+                </div>
+            {% empty %}
+                <p class="text-muted text-center mt-3">Nenhum item adicionado</p>
+            {% endfor %}
+        </div>
+        <div class="order-summary-footer">
+            <div class="total-section">
+                <span>Total</span>
+                <span>R$ {{ comanda.subtotal }}</span>
+            </div>
+            <div class="d-grid gap-2">
+                <form method="post" action="{% url 'core:enviar_cozinha' comanda.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">Enviar para Cozinha</button>
+                </form>
+                <form method="post" action="{% url 'core:finalizar_comanda' comanda.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Finalizar Pagamento</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Busca de produtos
+document.getElementById('busca-produto').addEventListener('input', function() {
+    const busca = this.value.toLowerCase();
+    const produtos = document.querySelectorAll('.product-item');
+    
+    produtos.forEach(produto => {
+        const nome = produto.querySelector('.product-info').textContent.toLowerCase();
+        if (nome.includes(busca)) {
+            produto.style.display = 'block';
+        } else {
+            produto.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

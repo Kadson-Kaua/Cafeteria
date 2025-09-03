@@ -1,0 +1,163 @@
+/* ========================================
+   FORMULÁRIO SIMPLES - PRODUTO
+   ======================================== */
+
+.simple-form {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.simple-form h3 {
+    color: #2d3748;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Campos do Formulário */
+.form-field {
+    margin-bottom: 0.75rem;
+}
+
+.form-field label {
+    display: block;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Campos de Input */
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    color: #2d3748;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.form-field textarea {
+    min-height: 80px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Checkbox */
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.checkbox-field input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    transform: scale(1.2);
+}
+
+.checkbox-field label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Botões */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-cancel,
+.btn-save {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-cancel {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-cancel:hover {
+    background: #edf2f7;
+    color: #2d3748;
+}
+
+.btn-save {
+    background: #3182ce;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #2c5aa0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+}
+
+/* Mensagens de Erro */
+.error {
+    color: #e53e3e;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .simple-form {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .simple-form {
+        padding: 1rem;
+    }
+    
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        padding: 0.875rem;
+    }
+}

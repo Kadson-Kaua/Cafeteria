@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ produto.nome }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="mb-0">{{ produto.nome }}</h1>
+                        <div class="btn-group">
+                            <a href="{% url 'core:produto_update' produto.pk %}" class="btn btn-warning">
+                                <i class="bi bi-pencil-fill"></i> Editar
+                            </a>
+                            <a href="{% url 'core:produto_delete' produto.pk %}" class="btn btn-danger">
+                                <i class="bi bi-trash-fill"></i> Excluir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h5>Descrição:</h5>
+                        <p>{{ produto.descricao|default:"Sem descrição" }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Preço:</h5>
+                        <p class="h4 text-primary">R$ {{ produto.preco }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Categoria:</h5>
+                        <p>
+                            <a href="{% url 'core:categoria_detail' produto.categoria.pk %}" class="text-decoration-none">
+                                {{ produto.categoria.nome }}
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Status:</h5>
+                        <span class="badge {% if produto.ativo %}bg-success{% else %}bg-secondary{% endif %} fs-6">
+                            {% if produto.ativo %}Ativo{% else %}Inativo{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Data de Criação:</h5>
+                        <p>{{ produto.created_at|date:"d/m/Y H:i" }}</p>
+                    </div>
+
+                    {% if produto.updated_at %}
+                        <div class="mb-3">
+                            <h5>Última Atualização:</h5>
+                            <p>{{ produto.updated_at|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informações da Categoria</h5>
+                </div>
+                <div class="card-body">
+                    <h6>{{ produto.categoria.nome }}</h6>
+                    <p class="text-muted">{{ produto.categoria.descricao|default:"Sem descrição" }}</p>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'core:categoria_detail' produto.categoria.pk %}" class="btn btn-outline-primary btn-sm">
+                            Ver Categoria Completa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'core:produtos' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para Produtos
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Editar Funcionário - Café Control{% endblock %}
+{% block page_title %}Editar Cargo do Funcionário{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-gear"></i>
+                        Editar Cargo do Funcionário
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6>Funcionário:</h6>
+                        <p class="mb-1"><strong>{{ object.get_full_name|default:object.username }}</strong></p>
+                        <p class="text-muted mb-0">{{ object.email }}</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.cargo.id_for_label }}" class="form-label">
+                                <i class="bi bi-briefcase"></i>
+                                Cargo
+                            </label>
+                            {{ form.cargo }}
+                            {% if form.cargo.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.cargo.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i>
+                                Salvar Alterações
+                            </button>
+                            <a href="{% url 'users:funcionarios' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Voltar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-select {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+{% endblock %}

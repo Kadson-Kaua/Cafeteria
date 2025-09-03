@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Editar Produto - Café Control{% endblock %}
+{% block page_title %}Editar Produto{% endblock %}
+
+{% block content %}
+    <div class="simple-form">
+        <h3>Editar Produto</h3>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-field">
+                <label for="{{ form.nome.id_for_label }}">Nome *</label>
+                {{ form.nome }}
+                {% if form.nome.errors %}
+                    <div class="error">{{ form.nome.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.descricao.id_for_label }}">Descrição</label>
+                {{ form.descricao }}
+                {% if form.descricao.errors %}
+                    <div class="error">{{ form.descricao.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.preco.id_for_label }}">Preço *</label>
+                {{ form.preco }}
+                {% if form.preco.errors %}
+                    <div class="error">{{ form.preco.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.categoria.id_for_label }}">Categoria *</label>
+                {{ form.categoria }}
+                {% if form.categoria.errors %}
+                    <div class="error">{{ form.categoria.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                <div class="checkbox-field">
+                    {{ form.ativo }}
+                    <label for="{{ form.ativo.id_for_label }}">Ativo</label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'core:produtos' %}" class="btn-cancel">Cancelar</a>
+                <button type="submit" class="btn-save">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/produto_form.css' %}">
+{% endblock %}

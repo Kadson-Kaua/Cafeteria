@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Criar Nova Comanda - Café Control{% endblock %}
+{% block page_title %}Criar Nova Comanda{% endblock %}
+
+{% block content %}
+<div class="simple-form">
+    <h3>Nova Comanda</h3>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-field">
+            <label for="{{ form.origem.id_for_label }}">Origem *</label>
+            {{ form.origem }}
+            {% if form.origem.errors %}
+                <div class="error">{{ form.origem.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-field">
+            <label for="{{ form.mesa.id_for_label }}">Mesa</label>
+            {{ form.mesa }}
+            {% if form.mesa.errors %}
+                <div class="error">{{ form.mesa.errors }}</div>
+            {% endif %}
+            <small class="form-text text-muted">Selecione uma mesa disponível</small>
+        </div>
+
+        <div class="form-field">
+            <label for="{{ form.observacao.id_for_label }}">Observações</label>
+            {{ form.observacao }}
+            {% if form.observacao.errors %}
+                <div class="error">{{ form.observacao.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'core:pedidos' %}" class="btn-cancel">Cancelar</a>
+            <button type="submit" class="btn-save">Criar Comanda</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const origemSelect = document.getElementById('{{ form.origem.id_for_label }}');
+    const mesaField = document.querySelector('.form-field:nth-child(3)'); // Campo da mesa
+    
+    function toggleMesaField() {
+        if (origemSelect.value === 'MESA') {
+            mesaField.style.display = 'block';
+        } else {
+            mesaField.style.display = 'none';
+            // Limpa o valor da mesa quando não é mesa
+            document.getElementById('{{ form.mesa.id_for_label }}').value = '';
+        }
+    }
+    
+    // Executa na carga da página
+    toggleMesaField();
+    
+    // Executa quando muda a origem
+    origemSelect.addEventListener('change', toggleMesaField);
+});
+</script>
+{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'css/produto_form.css' %}">
+{% endblock %}

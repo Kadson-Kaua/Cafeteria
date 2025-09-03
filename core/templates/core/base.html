@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Café Control{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Base -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    <!-- CSS ESPECÍFICO DA PÁGINA -->
+    <link rel="stylesheet" href="{% static 'css/page-specific.css' %}" id="page-specific-css">
+    {% block extra_css %}{% endblock %}
+    {% block page_css %}{% endblock %}
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <!-- Barra Lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Café Control</h3>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:dashboard' %}">
+                    <i class="bi bi-house-door-fill"></i> Início
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:pedidos' %}">
+                    <i class="bi bi-grid-1x2-fill"></i> Pedidos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:produtos' %}">
+                    <i class="bi bi-cup-hot-fill"></i> Produtos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:categorias' %}">
+                    <i class="bi bi-tags-fill"></i> Categorias
+                </a>
+            </li>
+            {% if user.cargo == 'GERENTE' or user.cargo == 'ADMIN' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:mesas' %}">
+                    <i class="bi bi-table"></i> Mesas
+                </a>
+            </li>
+            {% endif %}
+            {% if user.cargo == 'ADMIN' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:funcionarios' %}">
+                    <i class="bi bi-people-fill"></i> Funcionários
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Cabeçalho -->
+        <header class="content-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+                                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-dropdown">
+                            <button class="btn btn-link user-icon-btn" type="button" id="userDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i>
+                            </button>
+                            <div class="dropdown-menu user-dropdown-menu" aria-labelledby="userDropdownBtn">
+                                <div class="dropdown-header">
+                                    <div class="user-avatar">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <div class="user-info-details">
+                                        <h6 class="user-name">{{ user.get_full_name|default:user.username }}</h6>
+                                        <span class="user-role">{{ user.get_cargo_display }}</span> 
+                                        <span class="user-email">{{ user.email }}</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'users:logout' %}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    Sair do sistema
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Formulário de logout oculto -->
+        <form id="logout-form" method="post" action="{% url 'users:logout' %}" style="display: none;">
+            {% csrf_token %}
+        </form>
+
+        <!-- CONTEÚDO DA PÁGINA -->
+        <div id="page-content">
+            {% block content %}
+            <!-- O conteúdo específico de cada página será inserido aqui -->
+            {% endblock %}
+        </div>
+    </main>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script id="page-specific-scripts"></script>
+{% block extra_scripts %}{% endblock %}
+
+<script>
+// Melhorar a experiência do dropdown do usuário
+document.addEventListener('DOMContentLoaded', function() {
+    const userDropdownBtn = document.getElementById('userDropdownBtn');
+    const userDropdownMenu = document.querySelector('.user-dropdown-menu');
+    
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(event) {
+        if (!userDropdownBtn.contains(event.target) && !userDropdownMenu.contains(event.target)) {
+            const dropdown = bootstrap.Dropdown.getInstance(userDropdownBtn);
+            if (dropdown) {
+                dropdown.hide();
+            }
+        }
+    });
+    
+    // Adicionar animação suave ao dropdown
+    userDropdownBtn.addEventListener('click', function() {
+        const dropdown = bootstrap.Dropdown.getInstance(userDropdownBtn);
+        if (dropdown) {
+            userDropdownMenu.style.opacity = '0';
+            userDropdownMenu.style.transform = 'translateY(-10px)';
+            
+            setTimeout(() => {
+                userDropdownMenu.style.transition = 'all 0.3s ease';
+                userDropdownMenu.style.opacity = '1';
+                userDropdownMenu.style.transform = 'translateY(0)';
+            }, 50);
+        }
+    });
+});
+</script>
+
+</body>
+</html>
