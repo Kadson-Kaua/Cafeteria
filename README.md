@@ -140,9 +140,7 @@ cafe-control/
 │   └── api_urls.py       # URLs da API de usuários
 ├── static/               # Arquivos estáticos
 │   ├── css/             # Folhas de estilo
-│   ├── js/              # JavaScript
 │   └── images/          # Imagens
-├── media/               # Uploads de arquivos
 ├── requirements.txt     # Dependências Python
 ├── manage.py           # Script de gerenciamento Django
 └── README.md           # Este arquivo
@@ -215,28 +213,10 @@ Para deploy em produção, recomenda-se:
 4. **Configurar arquivos estáticos**
 5. **Configurar SSL/HTTPS**
 
-## 🤝 Contribuição
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
 ## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 👨‍💻 Autor
-
-**Seu Nome**
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- Email: seu-email@exemplo.com
-
-## 🙏 Agradecimentos
-
-- Django Documentation
-- Bootstrap Team
 - Comunidade Python/Django
 
 ---
