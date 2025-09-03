@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Categoria, Produto, Mesa, Comanda, ItemComanda
+from .models import Categoria, Produto, Mesa, Comanda, ItemComanda, Pagamento
 from users.models import User
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -37,6 +37,28 @@ class ComandaSerializer(serializers.ModelSerializer):
         fields = ['id', 'codigo', 'status', 'origem', 'observacao', 'desconto_valor', 
                  'taxa_percentual', 'created_at', 'mesa', 'mesa_numero', 'usuario', 
                  'usuario_nome', 'itens', 'subtotal', 'total_geral']
+
+class PagamentoSerializer(serializers.ModelSerializer):
+    metodo_display = serializers.CharField(source='get_metodo_display', read_only=True)
+    usuario_nome = serializers.CharField(source='usuario.get_full_name', read_only=True)
+    comanda_codigo = serializers.IntegerField(source='comanda.codigo', read_only=True)
+
+    class Meta:
+        model = Pagamento
+        fields = ['id', 'valor', 'metodo', 'metodo_display', 'troco', 'created_at', 
+                 'comanda', 'comanda_codigo', 'usuario', 'usuario_nome']
+
+class ComandaComPagamentoSerializer(serializers.ModelSerializer):
+    itens = ItemComandaSerializer(many=True, read_only=True, source='itemcomanda_set')
+    mesa_numero = serializers.CharField(source='mesa.numero', read_only=True)
+    usuario_nome = serializers.CharField(source='usuario.get_full_name', read_only=True)
+    pagamento = PagamentoSerializer(read_only=True)
+    
+    class Meta:
+        model = Comanda
+        fields = ['id', 'codigo', 'status', 'origem', 'observacao', 'desconto_valor', 
+                 'taxa_percentual', 'created_at', 'mesa', 'mesa_numero', 'usuario', 
+                 'usuario_nome', 'itens', 'subtotal', 'total_geral', 'pagamento']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

@@ -89,10 +89,9 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-secondary">Enviar para Cozinha</button>
                 </form>
-                <form method="post" action="{% url 'core:finalizar_comanda' comanda.pk %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Finalizar Pagamento</button>
-                </form>
+                <a href="{% url 'core:processar_pagamento' comanda.pk %}" class="btn btn-danger">
+                    <i class="bi bi-credit-card"></i> Realizar Pagamento
+                </a>
             </div>
         </div>
     </div>

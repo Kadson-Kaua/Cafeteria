@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
 from .models import *
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -20,6 +21,17 @@ class DashboardView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categorias'] = Categoria.objects.all()
+        
+        # Calcular total faturado (comandas pagas)
+        # Como total_geral é uma property, vamos calcular manualmente
+        comandas_pagas = Comanda.objects.filter(status='PAGA')
+        total_faturado = 0
+        
+        for comanda in comandas_pagas:
+            total_faturado += comanda.total_geral
+        
+        context['total_faturado'] = total_faturado
+        
         return context
 
 class ProdutoListView(LoginRequiredMixin, ListView):
@@ -269,6 +281,63 @@ class FinalizarComandaView(LoginRequiredMixin, View):
         request.session.pop('comanda_atual', None)
         messages.success(request, f'Comanda {comanda.codigo} finalizada!')
         return redirect('core:comandas')
+
+class ProcessarPagamentoView(LoginRequiredMixin, View):
+    def get(self, request, comanda_id):
+        comanda = get_object_or_404(Comanda, id=comanda_id)
+        return render(request, 'core/pagamento/processar_pagamento.html', {
+            'comanda': comanda
+        })
+    
+    def post(self, request, comanda_id):
+        comanda = get_object_or_404(Comanda, id=comanda_id)
+        
+        # Obter dados do formulário
+        metodo = request.POST.get('metodo')
+        valor_pago = request.POST.get('valor_pago')
+        troco = request.POST.get('troco', 0)
+        
+        # Validar dados
+        if not metodo or not valor_pago:
+            messages.error(request, 'Preencha todos os campos obrigatórios!')
+            return redirect('core:processar_pagamento', comanda_id=comanda_id)
+        
+        try:
+            valor_pago = float(valor_pago)
+            troco = float(troco) if troco else 0
+        except ValueError:
+            messages.error(request, 'Valores inválidos!')
+            return redirect('core:processar_pagamento', comanda_id=comanda_id)
+        
+        # Verificar se valor pago é suficiente
+        if valor_pago < comanda.total_geral:
+            messages.error(request, 'Valor pago é menor que o total da comanda!')
+            return redirect('core:processar_pagamento', comanda_id=comanda_id)
+        
+        # Criar pagamento
+        pagamento = Pagamento.objects.create(
+            valor=valor_pago,
+            metodo=metodo,
+            troco=troco,
+            comanda=comanda,
+            usuario=request.user
+        )
+        
+        # Atualizar comanda
+        comanda.pagamento = pagamento
+        comanda.status = 'PAGA'
+        comanda.save()
+        
+        # Liberar mesa se existir
+        if comanda.mesa:
+            comanda.mesa.status = 'LIVRE'
+            comanda.mesa.save()
+        
+        # Limpar sessão
+        request.session.pop('comanda_atual', None)
+        
+        messages.success(request, f'Pagamento processado com sucesso! Comanda {comanda.codigo} paga.')
+        return redirect('core:pedidos')
 
 class EnviarCozinhaView(LoginRequiredMixin, View):
     def post(self, request, comanda_id):

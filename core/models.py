@@ -84,6 +84,7 @@ class Comanda(models.Model):
     
     mesa = models.ForeignKey(Mesa,  on_delete=models.CASCADE, null=True, blank=True)  
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)  
+    pagamento = models.OneToOneField('Pagamento', on_delete=models.SET_NULL, null=True, blank=True, related_name='comanda_pagamento')  
 
     class Meta:
         verbose_name = 'Comanda'
@@ -155,7 +156,7 @@ class Pagamento(models.Model):
     troco = models.DecimalField(max_digits=8, decimal_places=2, default=0.00, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    comanda = models.ForeignKey(Comanda, on_delete=models.CASCADE)
+    comanda = models.ForeignKey(Comanda, on_delete=models.CASCADE, related_name='pagamentos')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

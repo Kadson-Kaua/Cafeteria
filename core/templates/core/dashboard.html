@@ -29,8 +29,8 @@
             <div class="card text-center">
                 <div class="card-body">
                     <i class="bi bi-currency-dollar text-success" style="font-size: 2.5rem;"></i>
-                    <h5 class="card-title mt-3">Produtos Ativos</h5>
-                    <p class="card-text display-6 text-success">{{ produtos.count }}</p>
+                    <h5 class="card-title mt-3">Total Faturado</h5>
+                    <p class="card-text display-6 text-success">R$ {{ total_faturado|floatformat:2 }}</p>
                 </div>
             </div>
         </div>

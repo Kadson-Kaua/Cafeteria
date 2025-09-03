@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Processar Pagamento - Café Control{% endblock %}
+{% block page_title %}Processar Pagamento{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Comanda #{{ comanda.codigo }}</h5>
+            </div>
+            <div class="card-body">
+                <!-- Resumo da Comanda -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6>Itens da Comanda:</h6>
+                        <ul class="list-group list-group-flush">
+                            {% for item in comanda.itemcomanda_set.all %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ item.produto.nome }} x{{ item.quantidade }}</span>
+                                <span>R$ {{ item.total|floatformat:2 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Resumo Financeiro:</h6>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <span>R$ {{ comanda.subtotal|floatformat:2 }}</span>
+                            </div>
+                            {% if comanda.desconto_valor %}
+                            <div class="list-group-item d-flex justify-content-between text-success">
+                                <span>Desconto:</span>
+                                <span>-R$ {{ comanda.desconto_valor|floatformat:2 }}</span>
+                            </div>
+                            {% endif %}
+                            {% if comanda.taxa_percentual %}
+                            <div class="list-group-item d-flex justify-content-between text-danger">
+                                <span>Taxa ({{ comanda.taxa_percentual }}%):</span>
+                                <span>+R$ {{ comanda.taxa_percentual|floatformat:2 }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="list-group-item d-flex justify-content-between fw-bold">
+                                <span>Total:</span>
+                                <span>R$ {{ comanda.total_geral|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário de Pagamento -->
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="metodo" class="form-label">Método de Pagamento *</label>
+                                <select class="form-select" id="metodo" name="metodo" required>
+                                    <option value="">Selecione o método</option>
+                                    <option value="DINHEIRO">Dinheiro</option>
+                                    <option value="CARTAO">Cartão</option>
+                                    <option value="PIX">PIX</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="valor_pago" class="form-label">Valor Pago *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="number" class="form-control" id="valor_pago" name="valor_pago" 
+                                           step="0.01" min="{{ comanda.total_geral|floatformat:2 }}" 
+                                           value="{{ comanda.total_geral|floatformat:2 }}" required>
+                                </div>
+                                <small class="form-text text-muted">Mínimo: R$ {{ comanda.total_geral|floatformat:2 }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="troco" class="form-label">Troco</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="number" class="form-control" id="troco" name="troco" 
+                                           step="0.01" min="0" value="0.00" readonly>
+                                </div>
+                                <small class="form-text text-muted">Calculado automaticamente</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="mb-3 w-100">
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="bi bi-check-circle"></i> Confirmar Pagamento
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const valorPagoInput = document.getElementById('valor_pago');
+    const trocoInput = document.getElementById('troco');
+    const totalComanda = {{ comanda.total_geral }};
+    
+    function calcularTroco() {
+        const valorPago = parseFloat(valorPagoInput.value) || 0;
+        const troco = Math.max(0, valorPago - totalComanda);
+        trocoInput.value = troco.toFixed(2);
+    }
+    
+    valorPagoInput.addEventListener('input', calcularTroco);
+    
+    // Calcular troco inicial
+    calcularTroco();
+});
+</script>
+{% endblock %}
