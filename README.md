@@ -56,7 +56,7 @@ Um sistema completo de gestão para cafeteria desenvolvido em Django, com contro
 ### 1. Clone o repositório
 ```bash
 git clone https://github.com/Kadson-Kaua/Cafeteria.git
-cd cafe-control
+cd Cafeteria
 ```
 
 ### 2. Crie um ambiente virtual
